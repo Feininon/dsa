@@ -1,0 +1,63 @@
+#include <stdio.h>
+#include <stdlib.h>
+#include <time.h>
+
+void generate_best(int arr[], int n) {
+    for (int i = 0; i < n; i++) arr[i] = i;
+}
+
+void generate_worst(int arr[], int n) {
+    for (int i = 0; i < n; i++) arr[i] = n - 1 - i;
+}
+
+void generate_avg(int arr[], int n) {
+    for (int i = 0; i < n; i++) arr[i] = rand() % 100000;
+}
+
+double insertion_sort(int arr[], int n) {
+    clock_t start = clock();
+
+    for (int i = 1; i < n; i++) {
+        int key = arr[i];
+        int j = i - 1;
+        while (j >= 0 && arr[j] > key) {
+            arr[j + 1] = arr[j];
+            j--;
+        }
+        arr[j + 1] = key;
+    }
+
+    clock_t end = clock();
+    return (double)(end - start) / CLOCKS_PER_SEC;
+}
+
+int main() {
+    srand((unsigned int)time(NULL));
+
+    int sizes[] = {1000, 5000, 10000, 20000, 50000};
+    double best[5], worst[5], avg[5];
+
+    for (int k = 0; k < 5; k++) {
+        int n = sizes[k];
+        int *arr = (int *)malloc(n * sizeof(int));
+
+        generate_best(arr, n);
+        best[k] = insertion_sort(arr, n);
+
+        generate_worst(arr, n);
+        worst[k] = insertion_sort(arr, n);
+
+        generate_avg(arr, n);
+        avg[k] = insertion_sort(arr, n);
+
+        free(arr);
+    }
+
+    printf("=== INSERTION SORT ===\n");
+    printf("Size, %d, %d, %d, %d, %d\n", sizes[0], sizes[1], sizes[2], sizes[3], sizes[4]);
+    printf("Best, %.6f, %.6f, %.6f, %.6f, %.6f\n", best[0], best[1], best[2], best[3], best[4]);
+    printf("Worst, %.6f, %.6f, %.6f, %.6f, %.6f\n", worst[0], worst[1], worst[2], worst[3], worst[4]);
+    printf("Avg, %.6f, %.6f, %.6f, %.6f, %.6f\n", avg[0], avg[1], avg[2], avg[3], avg[4]);
+
+    return 0;
+}
